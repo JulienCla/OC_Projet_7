@@ -5,9 +5,9 @@ import requests
 
 st.title('Dashboard - Scoring crédit')
 
-DATA_URL = 'C:/Users/julie/OpenClassrooms/Projet_7/final_features.csv'
+DATA_URL = 'final_features.csv'
 MODEL_URL = 'http://127.0.0.1:5001/invocations'
-MODEL_URL_FLASK = 'http://127.0.0.1:30000/'
+MODEL_URL_FLASK = 'flask_app'
 
 @st.cache_data
 def load_data():
