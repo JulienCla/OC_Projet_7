@@ -2,12 +2,16 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import requests
+import os
 
 st.title('Dashboard - Scoring crédit')
 
 DATA_URL = 'final_features.csv'
-MODEL_URL = 'http://127.0.0.1:5001/invocations'
-MODEL_URL_FLASK = 'flask_app'
+MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
+MODEL_URL_FLASK = 'https://OCJulienClaveau.pythonanywhere.com/predict'
+
+username = os.environ.get('PA_USERNAME')
+password = os.environ.get('PA_PASSWORD')
 
 @st.cache_data
 def load_data():
@@ -28,7 +32,7 @@ def request_prediction(model_uri, data):
     data_json = {'dataframe_split' : data.to_dict(orient='split')}
     
     response = requests.request(
-        method='POST', headers=headers, url=model_uri, json=data_json)
+        method='POST', headers=headers, url=model_uri, json=data_json, auth=(username, password))
 
     if response.status_code != 200:
         raise Exception(
