@@ -8,7 +8,7 @@ st.title('Dashboard - Scoring crédit')
 
 DATA_URL = 'final_features.csv'
 MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
-MODEL_URL_FLASK = 'https://OCJulienClaveau.pythonanywhere.com/predict'
+MODEL_URL_FLASK = 'https://ocjulienclaveau.pythonanywhere.com/predict'
 
 username = os.environ.get('PA_USERNAME')
 password = os.environ.get('PA_PASSWORD')
