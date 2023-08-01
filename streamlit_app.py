@@ -51,7 +51,7 @@ def main():
     predict_btn = st.button('Prédire')
 
     if predict_btn:
-        response = request_prediction(MODEL_URL_FLASK + 'predict', data)
+        response = request_prediction(MODEL_URL_FLASK, data)
         
         st.write(response['prediction'])
 
