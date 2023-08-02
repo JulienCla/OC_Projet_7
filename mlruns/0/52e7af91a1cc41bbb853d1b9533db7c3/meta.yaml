@@ -1,0 +1,16 @@
+artifact_uri: file:///C:/Users/julie/OpenClassrooms/Projet_7/mlruns/0/52e7af91a1cc41bbb853d1b9533db7c3/artifacts
+deleted_time: 1690271771523
+end_time: 1690270241271
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: deleted
+run_id: 52e7af91a1cc41bbb853d1b9533db7c3
+run_name: LogisticRegressionThresholded
+run_uuid: 52e7af91a1cc41bbb853d1b9533db7c3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1690270238518
+status: 4
+tags: []
+user_id: julie

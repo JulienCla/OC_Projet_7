@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/julie/OpenClassrooms/Projet_7/mlruns/0/6bd4db883e4f44d9b95299bf4dc5f669/artifacts
+end_time: 1689505109764
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6bd4db883e4f44d9b95299bf4dc5f669
+run_name: LogisticRegression
+run_uuid: 6bd4db883e4f44d9b95299bf4dc5f669
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1689505096170
+status: 3
+tags: []
+user_id: julie

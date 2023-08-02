@@ -30,7 +30,11 @@ def one_hot_encoder(df, nan_as_category = True):
 def application_train_test(num_rows = None, nan_as_category = False):
     # Read data and merge
     df = pd.read_csv('Data/application_train.csv', nrows= num_rows)
-    print("Train samples: {}".format(len(df)))
+    df_test = pd.read_csv('Data/application_test.csv')
+    print("Train size: {}".format(len(df)))
+    print("Test size: {}".format(len(df_test)))
+    df = df.append(df_test).reset_index()
+
     # Optional: Remove 4 applications with XNA CODE_GENDER
     df = df[df['CODE_GENDER'] != 'XNA']
     
