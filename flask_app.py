@@ -4,9 +4,21 @@ import joblib
 
 app = Flask(__name__)
 
-# Load pre-trained ML model during app initialization
-MODEL_PATH = 'LR_with_threshold.joblib'
+# Get the absolute path of the current directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Load pre-trained ML model using the absolute path
+MODEL_PATH = os.path.join(current_dir, 'LR_with_threshold.joblib')
 model = joblib.load(MODEL_PATH)
+
+@app.route('/git_update', method=['POST'])
+def git_update():
+    repo = git.Repo(current_dir)
+    origin = repo.remotes.origin
+    repo.create_head('main',
+    origin.refs.main).set_tracking_branch(origin.refs.main).checkout()
+    origin.pull()
+    return '', 200
 
 @app.route('/predict', methods=['POST'])
 def predict():
