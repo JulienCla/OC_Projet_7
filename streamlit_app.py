@@ -53,7 +53,7 @@ def main():
     if predict_btn:
         response = request_prediction(MODEL_URL_FLASK, data)
         
-        st.write(response['prediction'])
+        st.write(response)
 
         if int(response['prediction']) == '0' :
             st.write('Accordé')
