@@ -10,7 +10,7 @@ app = Flask(__name__)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Load pre-trained ML model using the absolute path
-MODEL_PATH = os.path.join(current_dir, 'flask_application/model.joblib')
+MODEL_PATH = os.path.join(current_dir, 'model.joblib')
 model = joblib.load(MODEL_PATH)
 
 # Automatic git pull
