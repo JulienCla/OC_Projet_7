@@ -33,7 +33,7 @@ def predict():
         # Make predictions using the loaded model
         predictions = model.predict(data)
         
-        return jsonify({'prediction' : str(predictions[0])})
+        return jsonify({'prediction' : predictions[0]})
     except Exception as e:
         return jsonify({'error': str(e)})
 
