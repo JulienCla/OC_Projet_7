@@ -235,7 +235,7 @@ def display_importances(feature_importance_df_, title='LightGBM Features (avg ov
     plt.title(title)
     plt.tight_layout()
     if save:
-        plt.savefig('features_importances.png')
+        plt.savefig('Data/features_importances.png')
     if display:
         plt.show()
     plt.close()
@@ -276,7 +276,7 @@ def plot_roc_auc(y_test, y_pred_proba, display=True, save=True):
     plt.legend(loc="lower right")
     plt.tight_layout()
     if save:    
-        plt.savefig('roc_auc_curve.png')
+        plt.savefig('Data/roc_auc_curve.png')
     if display:
         plt.show()
     plt.close()
@@ -284,7 +284,7 @@ def plot_roc_auc(y_test, y_pred_proba, display=True, save=True):
     return best_thresh
 
 def plot_confusion_matrix(cm, target_names, title, 
-                          normalize=True, save_path='matrix.png', display=True, save=True):
+                          normalize=True, save_path='Data/matrix.png', display=True, save=True):
     
     accuracy = np.trace(cm) / float(np.sum(cm))
     misclass = 1 - accuracy
@@ -351,7 +351,7 @@ def plot_learning_curve(X_train, y_train, estimator, display=True, save=True):
     ax.set_ylim(0.60, 0.8)
     plt.tight_layout()
     if save:
-        plt.savefig('learning_curve.png')
+        plt.savefig('Data/learning_curve.png')
     if display:
         plt.show()
     plt.close()
