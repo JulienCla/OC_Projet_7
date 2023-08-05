@@ -13,6 +13,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(current_dir, 'flask_application/model.joblib')
 model = joblib.load(MODEL_PATH)
 
+# Automatic git pull
 @app.route('/git_update', method=['POST'])
 def git_update():
     repo = git.Repo(current_dir)
