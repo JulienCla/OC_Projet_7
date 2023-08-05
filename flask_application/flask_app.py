@@ -14,7 +14,7 @@ MODEL_PATH = os.path.join(current_dir, 'model.joblib')
 model = joblib.load(MODEL_PATH)
 
 # Automatic git pull
-@app.route('/git_update', method=['POST'])
+@app.route('/git_update', methods=['POST'])
 def git_update():
     repo = git.Repo('/home/OCJulienClaveau/OC_Projet_7')
     origin = repo.remotes.origin
