@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-from falsk_app import app
+from flask_app import app
 
 
 class Testflaskapp(unittest.TestCase):
