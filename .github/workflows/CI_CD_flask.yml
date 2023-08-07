@@ -11,8 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
+  job1: 
     runs-on: ubuntu-latest
 
     steps:
@@ -36,3 +35,15 @@ jobs:
       run: |
         cd flask_application/
         python test_flask.py
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy Stage
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://ocjulienclaveau.eu.pythonanywhere.com/git_update'
+        method: 'POST'
+        username: ${{ secrets.PA_USER }}
+        password: ${{ secrets.PA_PASSWORD }}
+        customHeaders: '{"Content-Type": "application/json"}'
