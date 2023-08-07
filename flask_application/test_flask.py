@@ -1,5 +1,7 @@
 import unittest
 import pandas as pd
+from unittest.mock import MagicMock
+sys.modules['git'] = MagicMock()
 from flask_app import app
 
 
