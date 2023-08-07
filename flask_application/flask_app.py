@@ -13,7 +13,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(current_dir, 'model.joblib')
 model = joblib.load(MODEL_PATH)
 
-# Automatic git pull
+# Automatic git pull via endpoint
 @app.route('/git_update', methods=['POST'])
 def git_update():
     repo = git.Repo('/home/OCJulienClaveau/OC_Projet_7')
