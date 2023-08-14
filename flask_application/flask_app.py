@@ -15,13 +15,15 @@ MODEL_PATH = os.path.join(current_dir, 'model.joblib')
 model = joblib.load(MODEL_PATH)
 
 # Train lime explainer
-X = os.path.join(current_dir, 'lime_data.csv')
-cat_features = [i for i, c in enumerate(X.columns) if X.dtypes[i]!='float64']
+DATA_PATH = os.path.join(current_dir, 'lime_data.csv')
+lime_data = pd.read_csv(DATA_PATH)
+
+cat_features = lime_data.columns[57:98]
 class_names = ['accordé', 'refusé']
 
 explainer = lime_tabular.LimeTabularExplainer(X_smpl_tr, mode="classification",
                                               class_names=class_names,
-                                              feature_names=X.columns,
+                                              feature_names=lime_data.columns,
                                               categorical_features=cat_features)
                                           
 
@@ -48,7 +50,7 @@ def predict():
         predictions = model.predict(data)
         
         # Make explanation with lime
-        X_test_tr = model.named_steps['columntransformer'].transform(data)
+        X_test_tr = model.named_steps['imputer_scaler'].transform(data)
         predict_fn = model.named_steps['estimator'].predict_proba
 
         explanation = explainer.explain_instance(X_test_tr[0], predict_fn,
