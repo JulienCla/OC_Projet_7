@@ -20,7 +20,7 @@ class Testflaskapp(unittest.TestCase):
         rep_data = rep.get_json()
         
         self.assertEqual(rep.status_code, 200, 'Erreur lors de la requete : {}'.format(rep.status_code))
-        self.assertIn(rep_data['prediction'], [0, 1], 'Incorrect model output !{}'.format(rep_data))
+        self.assertIn(rep_data['prediction'], [0, 1], 'Incorrect model output !')
         
 if __name__ == '__main__':
     unittest.main()
