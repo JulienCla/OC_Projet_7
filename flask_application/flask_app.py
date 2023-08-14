@@ -60,7 +60,7 @@ def predict():
 
         explanation = explanation.as_html()
         
-        rep = [{'prediction': predictions[0], 'explanation': explanation}]
+        rep = {'prediction': predictions[0], 'explanation': explanation}
         return jsonify(rep, status=200, mimetype='application/json')
     
     except Exception as e:
