@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import requests
@@ -6,7 +7,7 @@ import os
 
 st.title('Dashboard - Scoring crédit')
 
-DATA_URL = 'Data/train.csv'
+DATA_URL = 'Data/data_streamlit.csv'
 MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
 MODEL_URL_FLASK = 'https://ocjulienclaveau.eu.pythonanywhere.com/predict'
 
@@ -59,6 +60,8 @@ def main():
             st.write('Accordé')
         else :
             st.write('refusé')
+            
+        components.html(response['explanation'])
       
                  
 if __name__ == '__main__':

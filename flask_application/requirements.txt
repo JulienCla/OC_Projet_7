@@ -5,3 +5,4 @@ itsdangerous==2.0.1
 werkzeug==2.0.3
 joblib==1.1.1
 scikit-learn==1.2.0
+lime==0.2.0.1

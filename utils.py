@@ -284,10 +284,13 @@ def plot_roc_auc(y_test, y_pred_proba, display=True, save=True):
     return best_thresh
 
 def plot_confusion_matrix(cm, target_names, title, 
-                          normalize=True, save_path='Data/matrix.png', display=True, save=True):
+                          normalize=True, save_path='Data/matrix.png',
+                          display=True, save=True):
     
-    accuracy = np.trace(cm) / float(np.sum(cm))
-    misclass = 1 - accuracy
+    # accuracy = np.trace(cm) / float(np.sum(cm))
+    # misclass = 1 - accuracy
+    recall = cm[1, 1] / (cm[1, 1] + cm[1, 0])
+    fpr = cm[0, 1] / (cm[0, 1] + cm[0, 0])
     
     cm_norm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
@@ -303,23 +306,23 @@ def plot_confusion_matrix(cm, target_names, title,
     thresh = cm_norm.max() / 1.5
 
     # if normalize:
-    plt.text(0, 0, "{:0.4f}%\n{:,}\n(TN)".format(cm_norm[0, 0], cm[0, 0]),
+    plt.text(0, 0, "{:,}\n(TN)".format( cm[0, 0]),
              horizontalalignment="center",
              color="white" if cm_norm[0, 0] > thresh else "black")
-    plt.text(1, 0, "{:0.4f}%\n{:,}\n(FP)".format(cm_norm[0, 1], cm[0, 1]),
+    plt.text(1, 0, "{:,}\n(FP)".format(cm[0, 1]),
              horizontalalignment="center",
              color="white" if cm_norm[0, 1] > thresh else "black")
-    plt.text(0, 1, "{:0.4f}%\n{:,}\n(FN)".format(cm_norm[1, 0], cm[1, 0]),
+    plt.text(0, 1, "{:,}\n(FN)".format(cm[1, 0]),
              horizontalalignment="center",
              color="white" if cm_norm[1, 0] > thresh else "black")
-    plt.text(1, 1, "{:0.4f}%\n{:,}\n(TP)".format(cm_norm[1, 1], cm[1, 1]),
+    plt.text(1, 1, "{:,}\n(TP)".format(cm[1, 1]),
              horizontalalignment="center",
              color="white" if cm_norm[1, 1] > thresh else "black")
 
     plt.tight_layout()
     plt.ylabel('True label')
-    plt.xlabel('Predicted label\naccuracy={:0.4f}; misclass={:0.4f}'\
-               .format(accuracy, misclass))
+    plt.xlabel('Predicted label\nRecall={:0.4f}; FalsePositiveRate={:0.4f}'\
+               .format(recall, fpr))
     
     plt.gcf().canvas.draw()
     if save:
@@ -347,8 +350,8 @@ def plot_learning_curve(X_train, y_train, estimator, display=True, save=True):
     LearningCurveDisplay.from_estimator(estimator, **common_params, ax=ax)
     handles, label = ax.get_legend_handles_labels()
     ax.legend(handles[:2], ["Training Score", "Test Score"])
-    ax.set_title(f"Learning Curve for Logistic Regression")
-    ax.set_ylim(0.60, 0.8)
+    ax.set_title("Learning Curve for Logistic Regression")
+    ax.set_ylim(0.50, 0.8)
     plt.tight_layout()
     if save:
         plt.savefig('Data/learning_curve.png')
@@ -356,6 +359,35 @@ def plot_learning_curve(X_train, y_train, estimator, display=True, save=True):
         plt.show()
     plt.close()
     
+def plot_hist_proba(X, y, th, display=True, save=True):
+    
+    d = {}
+    d['proba'] = X
+    d['true_class'] = y
+    data = pd.DataFrame(d)
+    
+    fig, ax = plt.subplots(figsize=(12,8))
+    
+    sns.histplot(ax=ax, data=data, x='proba', hue='true_class', kde=True)
+    h1, l1 = ax.get_legend().legendHandles, ['0', '1']
+
+    y = ax.get_ylim()
+    plt.plot([0.5, 0.5], y,
+                 color="navy", lw=2, linestyle="--", 
+                 label='Threshold (0.5)')
+    plt.plot([th, th], y,
+                 color="r", lw=2, linestyle="--", 
+                 label='Best Threshold ({})'.format(round(th, 3)))
+
+    ax.add_artist(ax.legend(h1, l1, loc='center right'))
+    ax.legend()
+    ax.set_title("Distribution des probas prédites")
+    plt.tight_layout()
+    if save:
+        plt.savefig('Data/distribution_pred_probas.png')
+    if display:
+        plt.show()
+    plt.close()
         
 # LightGBM GBDT with KFold or Stratified KFold
 # Parameters from Tilii kernel: https://www.kaggle.com/tilii7/olivier-lightgbm-parameters-by-bayesian-opt/code
