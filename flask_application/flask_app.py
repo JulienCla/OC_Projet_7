@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import pandas as pd
+import numpy as np
 import joblib
 import os
 import git
@@ -17,11 +18,12 @@ model = joblib.load(MODEL_PATH)
 # Train lime explainer
 DATA_PATH = os.path.join(current_dir, 'lime_data.csv')
 lime_data = pd.read_csv(DATA_PATH)
+X = lime_data.to_numpy()
 
 cat_features = lime_data.columns[57:98]
 class_names = ['accordé', 'refusé']
 
-explainer = lime_tabular.LimeTabularExplainer(X_smpl_tr, mode="classification",
+explainer = lime_tabular.LimeTabularExplainer(X, mode="classification",
                                               class_names=class_names,
                                               feature_names=lime_data.columns,
                                               categorical_features=cat_features)
