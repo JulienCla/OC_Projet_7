@@ -6,6 +6,7 @@ import os
 import git
 from lime import lime_tabular
 
+
 app = Flask(__name__)
 
 # Get the absolute path of the current directory
@@ -61,7 +62,7 @@ def predict():
         explanation = explanation.as_html()
         
         response = {
-            'prediction': predictions[0], 
+            'prediction': int(predictions[0]), 
             'explanation': explanation
         }
         return jsonify(response), 200
