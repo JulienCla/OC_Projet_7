@@ -56,7 +56,7 @@ def main():
         
         st.write(response)
 
-        if int(response['prediction']) == '0' :
+        if int(response['prediction']) == 0 :
             st.write('Accordé')
         else :
             st.write('refusé')
