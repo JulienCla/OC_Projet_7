@@ -60,9 +60,11 @@ def predict():
 
         explanation = explanation.as_html()
         
-        rep = {'prediction': predictions[0], 
-               'explanation': explanation}
-        return jsonify(rep), 200
+        response = {
+            'prediction': predictions[0], 
+            'explanation': explanation
+        }
+        return jsonify(response), 200
     
     except Exception as e:
         return jsonify({'error': str(e)})
