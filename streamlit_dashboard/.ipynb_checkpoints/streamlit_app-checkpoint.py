@@ -8,7 +8,7 @@ import os
 st.title('Dashboard - Scoring crédit')
 
 DATA_URL = 'Data/data_streamlit.csv'
-MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
+# MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
 MODEL_URL_FLASK = 'https://ocjulienclaveau.eu.pythonanywhere.com/predict'
 
 username = os.environ.get('PA_USERNAME')
@@ -54,7 +54,7 @@ def main():
     if predict_btn:
         response = request_prediction(MODEL_URL_FLASK, data)
         
-        st.write(response)
+        # st.write(response)
 
         if int(response['prediction']) == 0 :
             st.write('Accordé')
