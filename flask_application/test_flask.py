@@ -16,11 +16,11 @@ class Testflaskapp(unittest.TestCase):
         headers = {"Content-Type": "application/json"}
         data_test = pd.read_csv('data_test.csv')
         data_json = {'dataframe_split' : data_test.to_dict(orient='split')}
-        rep = self.client.post('/predict', headers=headers, json=data_json)
-        rep_data = rep.json()
+        response = self.client.post('/predict', headers=headers, json=data_json)
+        response_data = response.json()
         
-        self.assertEqual(rep.status_code, 200, 'Erreur lors de la requete : {}'.format(rep.status_code))
-        self.assertIn(rep_data['prediction'], [0, 1], 'Incorrect model output !')
+        self.assertEqual(response.status_code, 200, 'Erreur lors de la requete : {}'.format(rep.status_code))
+        self.assertIn(response_data['prediction'], [0, 1], 'Incorrect model output !')
         
 if __name__ == '__main__':
     unittest.main()
