@@ -6,6 +6,7 @@ name: CI/CD model with flask
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 permissions:
   contents: read
