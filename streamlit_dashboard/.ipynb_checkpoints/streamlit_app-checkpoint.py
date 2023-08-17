@@ -62,7 +62,7 @@ def main():
         else :
             st.write('refusé')
             
-        components.html(response['explanation'], width=600, height=200)
+        components.html(response['explanation'], width=1000, height=200)
       
                  
 if __name__ == '__main__':
