@@ -7,7 +7,8 @@ import os
 
 st.title('Dashboard - Scoring crédit')
 
-DATA_URL = 'data_streamlit.csv'
+CURR_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(CURR_DIR, "data_streamlit.csv")
 # MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
 MODEL_URL_FLASK = 'https://ocjulienclaveau.eu.pythonanywhere.com/predict'
 
@@ -16,7 +17,7 @@ password = os.environ.get('PA_PASSWORD')
 
 @st.cache_data
 def load_data():
-    data = pd.read_csv(DATA_URL)
+    data = pd.read_csv(DATA_PATH)
     st.write(data.shape)
     return data
 
