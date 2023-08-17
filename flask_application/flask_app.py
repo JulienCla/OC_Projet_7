@@ -21,7 +21,9 @@ DATA_PATH = os.path.join(current_dir, 'lime_data.csv')
 lime_data = pd.read_csv(DATA_PATH)
 X = lime_data.to_numpy()
 
-cat_features = lime_data.columns[57:98]
+nb_num_feats = len(lime_data.select_dtypes(include='float64').columns)
+nb_total_feats = lime_data.shape[1]
+cat_features = list(range(nb_num_feats, nb_total_feats))
 class_names = ['accordé', 'refusé']
 
 explainer = lime_tabular.LimeTabularExplainer(X, mode="classification",
