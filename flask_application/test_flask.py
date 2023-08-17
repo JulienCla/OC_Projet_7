@@ -3,20 +3,19 @@ import pandas as pd
 import sys
 from unittest.mock import MagicMock
 sys.modules['git'] = MagicMock()
-from flask_app import app, get_or_create_explainer
+from flask_app import app
 
 
 class Testflaskapp(unittest.TestCase):
     
     def setUp(self):
         app.config['TESTING'] = True
+        self.app = app
         self.client = app.test_client()
         
     
     def test_request_predict(self):
-        with app.app_context():
-            explainer = get_or_create_explainer()     
-        
+        with self.app.app_context():   
             headers = {"Content-Type": "application/json"}
             data_test = pd.read_csv('data_test.csv')
             data_json = {'dataframe_split' : data_test.to_dict(orient='split')}
