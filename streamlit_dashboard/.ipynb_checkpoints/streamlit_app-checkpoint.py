@@ -7,7 +7,7 @@ import os
 
 st.title('Dashboard - Scoring crédit')
 
-DATA_URL = 'data_streamlit.csv'
+DATA_URL = '/streamlit_dashboard/data_streamlit.csv'
 # MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
 MODEL_URL_FLASK = 'https://ocjulienclaveau.eu.pythonanywhere.com/predict'
 
