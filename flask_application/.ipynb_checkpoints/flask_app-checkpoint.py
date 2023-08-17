@@ -22,20 +22,21 @@ DATA_PATH = os.path.join(current_dir, 'lime_data.csv')
 # Function to create and return the explainer instance
 def get_explainer():
     training_data = pd.read_csv(DATA_PATH)
+    
     nb_num_feats = 104
     nb_total_feats = training_data.shape[1]
     cat_features = list(range(nb_num_feats, nb_total_feats))
     class_names = ['accordé', 'refusé']
+    feat_names = training_data.columns
     training_data = training_data.to_numpy()
     
     explainer = lime_tabular.LimeTabularExplainer(
         training_data,
         mode="classification",
         class_names=class_names,
-        feature_names=lime_data.columns,
+        feature_names=feat_names,
         categorical_features=cat_features
-    )
-        
+    )   
     return explainer
 
 # Get or create the explainer instance within the application context
@@ -43,6 +44,8 @@ def get_or_create_explainer():
     if 'explainer' not in g:
         g.explainer = get_explainer()
     return g.explainer
+
+explainer = get_or_create_explainer()
                                           
 
 # Automatic git pull via endpoint
@@ -54,6 +57,7 @@ def git_update():
     origin.refs.main).set_tracking_branch(origin.refs.main).checkout()
     origin.pull()
     return '', 200
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
