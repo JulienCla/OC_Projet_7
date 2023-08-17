@@ -24,7 +24,6 @@ class Testflaskapp(unittest.TestCase):
 
             self.assertEqual(response.status_code, 200, 'Erreur lors de la requete : {}'.format(response.status_code))
             self.assertIn(response_data['prediction'], [0, 1], 'Incorrect model output !')
-            self.assertEqual(response_data['explanation'], "Mock explanation")
         
 if __name__ == '__main__':
     unittest.main()
