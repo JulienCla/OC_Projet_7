@@ -18,18 +18,31 @@ model = joblib.load(MODEL_PATH)
 
 # Train lime explainer
 DATA_PATH = os.path.join(current_dir, 'lime_data.csv')
-lime_data = pd.read_csv(DATA_PATH)
-X = lime_data.to_numpy()
 
-nb_num_feats = 104
-nb_total_feats = lime_data.shape[1]
-cat_features = list(range(nb_num_feats, nb_total_feats))
-class_names = ['accordé', 'refusé']
+# Function to create and return the explainer instance
+def get_explainer():
+    training_data = pd.read_csv(DATA_PATH)
+    nb_num_feats = 104
+    nb_total_feats = training_data.shape[1]
+    cat_features = list(range(nb_num_feats, nb_total_feats))
+    class_names = ['accordé', 'refusé']
+    training_data = training_data.to_numpy()
+    
+    explainer = lime_tabular.LimeTabularExplainer(
+        training_data,
+        mode="classification",
+        class_names=class_names,
+        feature_names=lime_data.columns,
+        categorical_features=cat_features
+    )
+        
+    return explainer
 
-explainer = lime_tabular.LimeTabularExplainer(X, mode="classification",
-                                              class_names=class_names,
-                                              feature_names=lime_data.columns,
-                                              categorical_features=cat_features)
+# Get or create the explainer instance within the application context
+def get_or_create_explainer():
+    if 'explainer' not in g:
+        g.explainer = get_explainer()
+    return g.explainer
                                           
 
 # Automatic git pull via endpoint
