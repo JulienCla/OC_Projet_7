@@ -10,11 +10,14 @@ class Testflaskapp(unittest.TestCase):
     
     def setUp(self):
         app.config['TESTING'] = True
+        self.client = app.test_client()
         self.app_context = app.app_context()
         self.app_context.push()
-        self.client = app.test_client()
+        
+    def tearDown(self):
+        self.app_context.pop()        
     
-    @patch('app.get_or_create_explainer')
+    @patch('flask_app.get_or_create_explainer')
     def test_request_predict(self, mock_get_or_create_explainer):
         
         mock_explainer = mock_get_or_create_explainer.return_value
