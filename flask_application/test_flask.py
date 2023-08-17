@@ -10,6 +10,7 @@ class Testflaskapp(unittest.TestCase):
     
     def setUp(self):
         app.config['TESTING'] = True
+        self.app_context = app.app_context()
         self.client = app.test_client()
         
     def test_request_predict(self):
