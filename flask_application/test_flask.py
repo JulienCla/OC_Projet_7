@@ -11,7 +11,7 @@ class Testflaskapp(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
         self.app = app
-        self.client = app.test_client()
+        self.client = self.app.test_client()
         
     
     def test_request_predict(self):
@@ -23,7 +23,6 @@ class Testflaskapp(unittest.TestCase):
             response_data = response.get_json()
 
             self.assertEqual(response.status_code, 200, 'Erreur lors de la requete : {}'.format(response.status_code))
-            print(response_data)
             self.assertIn(response_data['prediction'], [0, 1], 'Incorrect model output !')
             self.assertEqual(response_data['explanation'], "Mock explanation")
         
