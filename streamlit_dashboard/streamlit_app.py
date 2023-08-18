@@ -52,7 +52,7 @@ def main():
     # de base les 10 variables les plus pertinentes sont séléctionnées
     selected_columns = st.multiselect('Choisissez les colonnes à afficher:',
                                       data.columns,
-                                      default=data.iloc[:, 0:10])
+                                      default=data.iloc[:, 0:10].columns)
     
     # Dataframe dynamique pour permettre à l'utilisateur de demander une
     # prédiction avec des changements sur ses infos
