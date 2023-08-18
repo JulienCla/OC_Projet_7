@@ -52,15 +52,17 @@ def request_prediction(model_uri, data):
 
                  
 def main():
+    
+    st.subheader("Informations Client")
     # Récupération des données clients via SK_ID_CURR
-    id_client = st.number_input('## Id Client', value=0)
+    id_client = st.number_input('Id Client', value=0)
     data = get_data_client(id_client)
     
     # Filtre pour choisir quelles colonnes afficher 
     # de base les 10 variables les plus pertinentes sont séléctionnées
     col = data.columns.to_list()
     default_col = col[0:10]
-    selected_columns = st.multiselect('## Choisissez les colonnes à afficher:',
+    selected_columns = st.multiselect('Choisissez les colonnes à afficher:',
                                       col,
                                       default=default_col)
     
@@ -68,6 +70,8 @@ def main():
     # prédiction avec des changements sur ses infos
     edited_data = st.data_editor(data[selected_columns])
     
+    st.write("--")
+    st.markdown('#')
     col1, col2 = st.columns(2)
     
     # Bouton pour requete vers flask API servant le modèle
@@ -79,12 +83,12 @@ def main():
     # Affichage du résultat de la prédiction
     if response is not None:
         if int(response['prediction']) == 0 :
-            col2.markdown(':green[Accordé]')
+            col2.markdown('**:green[Accordé]**')
         else :
-            col2.markdown(':red[Refusé]')
+            col2.markdown('**:red[Refusé]**')
 
         # Affichage explication de la prédiction (avec LIME)
-        components.html(response['explanation'], width=1000, height=200)
+        components.html(response['explanation'], width=1200, height=300)
       
                  
 if __name__ == '__main__':
