@@ -45,6 +45,8 @@ def get_or_create_explainer():
         g.explainer = get_explainer()
     return g.explainer
 
+get_or_create_explainer()
+
 # Automatic git pull via endpoint
 @app.route('/git_update', methods=['POST'])
 def git_update():
