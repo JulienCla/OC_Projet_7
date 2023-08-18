@@ -61,6 +61,7 @@ def git_update():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    explainer = get_or_create_explainer()
     try:
         # get the data in JSON format and transform it in pd.DataFrame
         data_json = request.get_json()
