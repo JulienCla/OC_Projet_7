@@ -20,6 +20,7 @@ st.set_page_config(
     layout="wide"
 )
 st.sidebar.write("Crédit Score")
+st.markdown("<h1 style='text-align: center; color: black;'>Dashboard - Scoring crédit</h1>", unsafe_allow_html=True)
 
 username = os.environ.get('PA_USERNAME')
 password = os.environ.get('PA_PASSWORD')
