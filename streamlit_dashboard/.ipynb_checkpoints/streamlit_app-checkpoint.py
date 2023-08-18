@@ -68,7 +68,7 @@ def main():
         response = request_prediction(MODEL_URL_FLASK, data)
     
     # Affichage du résultat de la prédiction
-    if response not None:
+    if response is not None:
         if int(response['prediction']) == 0 :
             col2.write('Accordé', 'green')
         else :
