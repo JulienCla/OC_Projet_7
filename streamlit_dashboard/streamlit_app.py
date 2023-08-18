@@ -89,7 +89,7 @@ def main():
             col2.markdown('**:red[Refusé]**')
 
         # Affichage explication de la prédiction (avec LIME)
-        st.write("Détails du score obtenu :"
+        st.write("Détails du score obtenu :")
         components.html(response['explanation'], width=1200, height=300)
       
                  
