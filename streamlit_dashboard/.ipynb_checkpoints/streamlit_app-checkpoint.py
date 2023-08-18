@@ -68,13 +68,14 @@ def main():
         response = request_prediction(MODEL_URL_FLASK, data)
     
     # Affichage du résultat de la prédiction
-    if int(response['prediction']) == 0 :
-        col2.write('Accordé', 'green')
-    else :
-        col2.write('Refusé', 'red')
-    
-    # Affichage explication de la prédiction (avec LIME)
-    components.html(response['explanation'], width=1000, height=200)
+    if response not None:
+        if int(response['prediction']) == 0 :
+            col2.write('Accordé', 'green')
+        else :
+            col2.write('Refusé', 'red')
+
+        # Affichage explication de la prédiction (avec LIME)
+        components.html(response['explanation'], width=1000, height=200)
       
                  
 if __name__ == '__main__':
