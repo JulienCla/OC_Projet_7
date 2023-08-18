@@ -6,19 +6,20 @@ import requests
 from PIL import Image
 import os
 
+CURR_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(CURR_DIR, "data_streamlit.csv")
+# MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
+MODEL_URL_FLASK = 'https://ocjulienclaveau.eu.pythonanywhere.com/predict'
+LOGO_PATH = os.path.join(CURR_DIR, "OClogo.png")
+
 # Config initiale
-logo = Image.open("OClogo.png")
+logo = Image.open(LOGO_PATH)
 st.set_page_config(
     page_title='Dashboard - Scoring crédit',
     page_icon=logo,
     layout="wide"
 )
 st.sidebar.write("Crédit Score")
-
-CURR_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(CURR_DIR, "data_streamlit.csv")
-# MODEL_URL_MLFLOW = 'http://127.0.0.1:5001/invocations'
-MODEL_URL_FLASK = 'https://ocjulienclaveau.eu.pythonanywhere.com/predict'
 
 username = os.environ.get('PA_USERNAME')
 password = os.environ.get('PA_PASSWORD')
