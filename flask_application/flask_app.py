@@ -38,15 +38,15 @@ def get_explainer():
         categorical_features=cat_features
     )   
     return explainer
+explainer = get_explainer()
+# # Get or create the explainer instance within the application context
+# def get_or_create_explainer():
+#     if 'explainer' not in g:
+#         g.explainer = get_explainer()
+#     return g.explainer
 
-# Get or create the explainer instance within the application context
-def get_or_create_explainer():
-    if 'explainer' not in g:
-        g.explainer = get_explainer()
-    return g.explainer
-
-with app.app_context():
-    get_or_create_explainer()
+# with app.app_context():
+#     get_or_create_explainer()
 
 # Automatic git pull via endpoint
 @app.route('/git_update', methods=['POST'])
@@ -61,7 +61,6 @@ def git_update():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    explainer = get_or_create_explainer()
     try:
         # get the data in JSON format and transform it in pd.DataFrame
         data_json = request.get_json()
