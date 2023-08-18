@@ -50,10 +50,9 @@ def main():
     
     # Filtre pour choisir quelles colonnes afficher 
     # de base les 10 variables les plus pertinentes sont séléctionnées
-    default_col = data.columns[0:10]
     selected_columns = st.multiselect('Choisissez les colonnes à afficher:',
                                       data.columns,
-                                      default=default_col)
+                                      default=[0:10]
     
     # Dataframe dynamique pour permettre à l'utilisateur de demander une
     # prédiction avec des changements sur ses infos
