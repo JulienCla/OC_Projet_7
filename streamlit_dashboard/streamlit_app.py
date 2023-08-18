@@ -70,13 +70,14 @@ def main():
     # prédiction avec des changements sur ses infos
     edited_data = st.data_editor(data[selected_columns])
     
-    st.write("--")
     st.markdown('#')
+    st.subheader("Scoring")
     col1, col2 = st.columns(2)
     
     # Bouton pour requete vers flask API servant le modèle
     response = None
     predict_btn = col1.button('Obtenir Prédiction')
+    
     if predict_btn:
         response = request_prediction(MODEL_URL_FLASK, data)
     
@@ -88,6 +89,7 @@ def main():
             col2.markdown('**:red[Refusé]**')
 
         # Affichage explication de la prédiction (avec LIME)
+        st.write("Détails du score obtenu :"
         components.html(response['explanation'], width=1200, height=300)
       
                  
