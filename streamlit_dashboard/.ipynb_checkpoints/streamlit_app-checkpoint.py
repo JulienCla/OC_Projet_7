@@ -3,9 +3,17 @@ import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import requests
+from PIL import Image
 import os
 
-st.title('Dashboard - Scoring crédit')
+# Config initiale
+logo = Image.open("OClogo.png")
+st.set_page_config(
+    page_title='Dashboard - Scoring crédit',
+    page_icon=logo,
+    layout="wide"
+)
+st.sidebar.write("Crédit Score")
 
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(CURR_DIR, "data_streamlit.csv")
@@ -18,14 +26,12 @@ password = os.environ.get('PA_PASSWORD')
 @st.cache_data
 def load_data():
     data = pd.read_csv(DATA_PATH)
-    st.write(data.shape)
     return data
 
 def get_data_client(id_client):
     data = load_data()
     data_client = data.loc[data['SK_ID_CURR'] == id_client, :]
     data_client = data_client.replace(np.nan, None)
-    st.write(data_client.shape)
     return data_client
 
 def request_prediction(model_uri, data):
@@ -45,14 +51,14 @@ def request_prediction(model_uri, data):
                  
 def main():
     # Récupération des données clients via SK_ID_CURR
-    id_client = st.number_input('Id Client', value=0)
+    id_client = st.number_input('## Id Client', value=0)
     data = get_data_client(id_client)
     
     # Filtre pour choisir quelles colonnes afficher 
     # de base les 10 variables les plus pertinentes sont séléctionnées
     col = data.columns.to_list()
     default_col = col[0:10]
-    selected_columns = st.multiselect('Choisissez les colonnes à afficher:',
+    selected_columns = st.multiselect('## Choisissez les colonnes à afficher:',
                                       col,
                                       default=default_col)
     
@@ -71,9 +77,9 @@ def main():
     # Affichage du résultat de la prédiction
     if response is not None:
         if int(response['prediction']) == 0 :
-            col2.write('Accordé', 'green')
+            col2.markdown(':green[Accordé]')
         else :
-            col2.write('Refusé', 'red')
+            col2.markdown(':red[Refusé]')
 
         # Affichage explication de la prédiction (avec LIME)
         components.html(response['explanation'], width=1000, height=200)
