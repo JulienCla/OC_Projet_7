@@ -44,25 +44,36 @@ def request_prediction(model_uri, data):
 
                  
 def main():
-
+    # Récupération des données clients via SK_ID_CURR
     id_client = st.number_input('Id Client', value=0)
     data = get_data_client(id_client)
     
-    st.dataframe(data)
+    # Filtre pour choisir quelles colonnes afficher 
+    # de base les 10 variables les plus pertinentes sont séléctionnées
+    default_col = data.columns[0:10]
+    selected_columns = st.multiselect('Choisissez les colonnes à afficher:',
+                                      data.columns,
+                                      default=default_col)
     
-    predict_btn = st.button('Prédire')
-
+    # Dataframe dynamique pour permettre à l'utilisateur de demander une
+    # prédiction avec des changements sur ses infos
+    edited_data = st.data_editor(data[selected_columns])
+    
+    col1, col2 = st.columns(2)
+    
+    # Bouton pour requete vers flask API servant le modèle
+    predict_btn = col1.button('Obtenir Prédiction')
     if predict_btn:
         response = request_prediction(MODEL_URL_FLASK, data)
-        
-        # st.write(response)
-
-        if int(response['prediction']) == 0 :
-            st.write('Accordé')
-        else :
-            st.write('refusé')
-            
-        components.html(response['explanation'], width=1000, height=200)
+    
+    # Affichage du résultat de la prédiction
+    if int(response['prediction']) == 0 :
+        col2.write('Accordé', 'green')
+    else :
+        col2.write('Refusé', 'red')
+    
+    # Affichage explication de la prédiction (avec LIME)
+    components.html(response['explanation'], width=1000, height=200)
       
                  
 if __name__ == '__main__':

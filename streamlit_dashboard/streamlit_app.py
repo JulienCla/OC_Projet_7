@@ -70,7 +70,7 @@ def main():
     if int(response['prediction']) == 0 :
         col2.write('Accordé', 'green')
     else :
-        col2.write('Refusé', 'red)
+        col2.write('Refusé', 'red')
     
     # Affichage explication de la prédiction (avec LIME)
     components.html(response['explanation'], width=1000, height=200)
