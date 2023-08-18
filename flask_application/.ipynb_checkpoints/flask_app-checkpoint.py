@@ -45,7 +45,8 @@ def get_or_create_explainer():
         g.explainer = get_explainer()
     return g.explainer
 
-explainer = get_or_create_explainer()
+with app.app_context():
+    explainer = get_or_create_explainer()
 
 # Automatic git pull via endpoint
 @app.route('/git_update', methods=['POST'])
@@ -60,34 +61,33 @@ def git_update():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    with app.app_context():
-        try:
-            # get the data in JSON format and transform it in pd.DataFrame
-            data_json = request.get_json()
-            data = pd.DataFrame(data_json['dataframe_split']['data'], 
-                                columns=data_json['dataframe_split']['columns'], 
-                                index=data_json['dataframe_split']['index'])
+    try:
+        # get the data in JSON format and transform it in pd.DataFrame
+        data_json = request.get_json()
+        data = pd.DataFrame(data_json['dataframe_split']['data'], 
+                            columns=data_json['dataframe_split']['columns'], 
+                            index=data_json['dataframe_split']['index'])
 
-            # Make predictions using the loaded model
-            predictions = model.predict(data)
+        # Make predictions using the loaded model
+        predictions = model.predict(data)
 
-            # Make explanation with lime
-            X_test_tr = model.named_steps['imputer_scaler'].transform(data)
-            predict_fn = model.named_steps['estimator'].predict_proba
+        # Make explanation with lime
+        X_test_tr = model.named_steps['imputer_scaler'].transform(data)
+        predict_fn = model.named_steps['estimator'].predict_proba
 
-            explanation = explainer.explain_instance(X_test_tr[0], predict_fn,
-                                                     num_features=5)
+        explanation = explainer.explain_instance(X_test_tr[0], predict_fn,
+                                                 num_features=5)
 
-            explanation = explanation.as_html()
+        explanation = explanation.as_html()
 
-            response = {
-                'prediction': int(predictions[0]), 
-                'explanation': explanation
-            }
-            return jsonify(response), 200
+        response = {
+            'prediction': int(predictions[0]), 
+            'explanation': explanation
+        }
+        return jsonify(response), 200
 
-        except Exception as e:
-            return jsonify({'error': str(e)})
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run()
