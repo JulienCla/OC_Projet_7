@@ -63,6 +63,7 @@ def main():
     col1, col2 = st.columns(2)
     
     # Bouton pour requete vers flask API servant le modèle
+    response = None
     predict_btn = col1.button('Obtenir Prédiction')
     if predict_btn:
         response = request_prediction(MODEL_URL_FLASK, data)
