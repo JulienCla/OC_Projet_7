@@ -81,6 +81,7 @@ def predict():
         #                                        num_features=5)
 
         # for lgbm
+        predict_fn = model.predict_proba
         explanation = explainer.explain_instance(data, predict_fn,
                                                  num_features=5)
         
