@@ -72,12 +72,18 @@ def predict():
         predictions = model.predict(data)
 
         # Make explanation with lime
-        X_test_tr = model.named_steps['imputer_scaler'].transform(data)
-        predict_fn = model.named_steps['estimator'].predict_proba
+        
+        # for logistic regression
+        # X_test_tr = model.named_steps['imputer_scaler'].transform(data)
+        # predict_fn = model.named_steps['estimator'].predict_proba
+        #
+        # explanation = explainer.explain_instance(X_test_tr[0], predict_fn,
+        #                                        num_features=5)
 
-        explanation = explainer.explain_instance(X_test_tr[0], predict_fn,
+        # for lgbm
+        explanation = explainer.explain_instance(data, predict_fn,
                                                  num_features=5)
-
+        
         explanation = explanation.as_html()
 
         response = {
