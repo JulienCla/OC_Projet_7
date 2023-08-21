@@ -33,7 +33,7 @@ class Testflaskapp(unittest.TestCase):
 
             self.assertEqual(response.status_code, 200, 'Erreur lors de la requete : {}'.format(response.status_code))
             self.assertIsNotNone(response_data, 'Erreur contenu reponse : {}'.format(response_data))
-            self.assertIn(response_data['prediction'], [0, 1], 'Incorrect response output ! : {}'.format(response_data['prediction']))
+            self.assertIn(response_data[0], [0, 1], 'Incorrect response output ! : {}'.format(response_data['prediction']))
             
     
 if __name__ == '__main__':
