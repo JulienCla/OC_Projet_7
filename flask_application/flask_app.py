@@ -5,6 +5,7 @@ import joblib
 import os
 import git
 from lime import lime_tabular
+from lightgbm import LGBMClassifier
 
 
 app = Flask(__name__)
