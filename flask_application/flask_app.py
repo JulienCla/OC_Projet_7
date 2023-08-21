@@ -1,11 +1,10 @@
-from flask import Flask, request, jsonify, g
+from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
 import joblib
 import os
 import git
 from lime import lime_tabular
-from lightgbm import LGBMClassifier
 
 
 app = Flask(__name__)
