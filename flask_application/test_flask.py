@@ -18,6 +18,7 @@ class Testflaskapp(unittest.TestCase):
         with self.app.app_context():   
             headers = {"Content-Type": "application/json"}
             data_test = pd.read_csv('data_test.csv')
+            data_test.drop('Unnamed: 0', axis=1, inplace=True)
             data_json = {'dataframe_split' : data_test.to_dict(orient='split')}
             response = self.client.post('/predict', headers=headers, json=data_json)
             response_data = response.get_json()
