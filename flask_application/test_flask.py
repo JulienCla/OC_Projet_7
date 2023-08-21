@@ -20,7 +20,7 @@ class Testflaskapp(unittest.TestCase):
         
         model = joblib.load('model.joblib')
         pred = model.predict(data_test)
-        self.assertIn(pred, [0, 1], 'Incorrect model output !')
+        self.assertIn(pred, [0, 1], 'Incorrect model output ! : {}'.format(pred))
         
     def test_request_predict(self):
         with self.app.app_context():   
