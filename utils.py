@@ -395,74 +395,10 @@ def plot_hist_proba(X, y, th, display=True, save=True):
         plt.show()
     plt.close()
 
-# Fonctions pour clustering client
-def clustering_scores(X, clusters, display=False):
-    """
-    Compute scores for clustering :
-        - Distortion
-        - Calinsky Harabasz
-        - Silhouette
-        - Gini
-    -----------------------------------
-    Params:
-        X : pd.Dataframe : samples utilisées pour le clustering (sans les labels des clusters)
-        clusters : pd.series ou array (mm longueur que X) : labels de nos samples
-        display : boolean : print ou non les résultats
-    Returns:
-        results : array : array contenant nos scores
-    """
-    
-    # Calcul des coordonées des clusters
-    
-    centers = [] # liste d'array , coordonnées des clusters
-    k = len(clusters.unique()) # nombre de cluster
-    
-    for i in sorted(clusters.unique(), reverse=True):
-        
-        center = X.loc[clusters == i, :].mean().values
-        centers.append(center)
-        
-    if k == 1:
-        return([0,0,0,0])
-       
-        
-    
-    # Score de Distortion
-    
-    distortion = 0
-    for i in range(X.shape[0]):
-        distortion += min([metrics.pairwise.euclidean_distances(
-                            X.iloc[i].to_numpy().reshape(1, -1), c.reshape(1, -1))**2 for c in centers]).item()
-    
-    # Score Calinsky Harabasz
-    
-    cali = metrics.calinski_harabasz_score(X, clusters)
-        
-    # Score Silhouette    
-        
-    sil = metrics.silhouette_score(X, clusters)
-    
-    # Score de Gini
-    
-    gin = gini(clusters)
-        
-    # Affichage des resultats
-    
-    if display:
-        
-        print('Score avec {} clusters: '.format(k))
-        print('Score de Distortion : {:,}'.format(round(distortion)))
-        print('Score de Calinsky Harabasz : {:,}'.format(round(cali)))
-        print('Score de Silhouette : {}'.format(round(sil, 2)))
-        print('Score de Gini : {}'.format(round(gin, 3)))
-        
-    
-    return([distortion, cali, sil, gin])
-    
 # =======================================================================================================
+# Fonctions pour clustering client
 
 # Gap Statistic for K means
-    
 def optimalK(data, nrefs=3, maxClusters=15):
     """
     Calculates KMeans optimal K using Gap Statistic 
@@ -507,7 +443,6 @@ def optimalK(data, nrefs=3, maxClusters=15):
 # =======================================================================================================
 
 # Gini coefficient
-    
 def gini(clusters_labels):
     """Compute the Gini coefficient for a clustering.
     Parameters:
@@ -531,6 +466,7 @@ def gini(clusters_labels):
 
 # =======================================================================================================
 
+# Compute kmeans and scores
 def kmeans_function(data, scaler=None, K=None):
     """Fonction pour clustering K-means :
         - Scaling des données
