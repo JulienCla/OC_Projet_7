@@ -4,12 +4,15 @@ import re
 import time
 import joblib
 import itertools
+import collections
 from contextlib import contextmanager
 from lightgbm import LGBMClassifier
 from sklearn.metrics import roc_auc_score, roc_curve
 from sklearn.model_selection import KFold, StratifiedKFold, LearningCurveDisplay
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import seaborn as sns
+from yellowbrick.cluster import KElbowVisualizer, SilhouetteVisualizer
 
 # @contextmanager
 # def timer(title):
@@ -283,6 +286,7 @@ def plot_roc_auc(y_test, y_pred_proba, display=True, save=True):
     
     return best_thresh
 
+# Display/plot confusion matrix
 def plot_confusion_matrix(cm, target_names, title, 
                           normalize=True, save_path='Data/matrix.png',
                           display=True, save=True):
@@ -331,6 +335,7 @@ def plot_confusion_matrix(cm, target_names, title,
         plt.show()
     plt.close()
 
+# Compute and Display/plot Learning curve
 def plot_learning_curve(X_train, y_train, estimator, display=True, save=True):
     
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -358,7 +363,8 @@ def plot_learning_curve(X_train, y_train, estimator, display=True, save=True):
     if display:
         plt.show()
     plt.close()
-    
+
+# Display/plot probas distributions
 def plot_hist_proba(X, y, th, display=True, save=True):
     
     d = {}
@@ -388,71 +394,229 @@ def plot_hist_proba(X, y, th, display=True, save=True):
     if display:
         plt.show()
     plt.close()
-        
-# LightGBM GBDT with KFold or Stratified KFold
-# Parameters from Tilii kernel: https://www.kaggle.com/tilii7/olivier-lightgbm-parameters-by-bayesian-opt/code
-# def kfold_lightgbm(df, num_folds, stratified = False, debug= False):
-#     # Divide in training/validation and test data
-#     train_df = df[df['TARGET'].notnull()]
-#     test_df = df[df['TARGET'].isnull()]
-#     print("Starting LightGBM. Train shape: {}, test shape: {}".format(train_df.shape, test_df.shape))
-#     del df
-#     gc.collect()
-#     # Cross validation model
-#     if stratified:
-#         folds = StratifiedKFold(n_splits= num_folds, shuffle=True, random_state=1001)
-#     else:
-#         folds = KFold(n_splits= num_folds, shuffle=True, random_state=1001)
-#     # Create arrays and dataframes to store results
-#     best_score = 0
-#     oof_preds = np.zeros(train_df.shape[0])
-#     sub_preds = np.zeros(test_df.shape[0])
-#     feature_importance_df = pd.DataFrame()
-#     feats = [f for f in train_df.columns if f not in ['TARGET','SK_ID_CURR','SK_ID_BUREAU','SK_ID_PREV','index']]
+
+# Fonctions pour clustering client
+def clustering_scores(X, clusters, display=False):
+    """
+    Compute scores for clustering :
+        - Distortion
+        - Calinsky Harabasz
+        - Silhouette
+        - Gini
+    -----------------------------------
+    Params:
+        X : pd.Dataframe : samples utilisées pour le clustering (sans les labels des clusters)
+        clusters : pd.series ou array (mm longueur que X) : labels de nos samples
+        display : boolean : print ou non les résultats
+    Returns:
+        results : array : array contenant nos scores
+    """
     
-#     for n_fold, (train_idx, valid_idx) in enumerate(folds.split(train_df[feats], train_df['TARGET'])):
-#         train_x, train_y = train_df[feats].iloc[train_idx], train_df['TARGET'].iloc[train_idx]
-#         valid_x, valid_y = train_df[feats].iloc[valid_idx], train_df['TARGET'].iloc[valid_idx]
-
-#         # LightGBM parameters found by Bayesian optimization
-#         clf = LGBMClassifier(
-#             # nthread=4,
-#             n_estimators=10000,
-#             learning_rate=0.02,
-#             num_leaves=34,
-#             colsample_bytree=0.9497036,
-#             subsample=0.8715623,
-#             max_depth=8,
-#             reg_alpha=0.041545473,
-#             reg_lambda=0.0735294,
-#             min_split_gain=0.0222415,
-#             min_child_weight=39.3259775,
-#             # silent=-1,
-#             verbose=-1, )
-
-#         clf.fit(train_x, train_y, eval_set=[(train_x, train_y), (valid_x, valid_y)], 
-#             eval_metric= 'auc', verbose= 200, early_stopping_rounds= 200)
+    # Calcul des coordonées des clusters
+    
+    centers = [] # liste d'array , coordonnées des clusters
+    k = len(clusters.unique()) # nombre de cluster
+    
+    for i in sorted(clusters.unique(), reverse=True):
         
-#         if clf.score(train_df[feats], train_df['TARGET']) > best_score :
-#             best_score = clf.score(train_df[feats], train_df['TARGET'])
-#             joblib.dump(clf, 'lgbm_model.joblib')
+        center = X.loc[clusters == i, :].mean().values
+        centers.append(center)
+        
+    if k == 1:
+        return([0,0,0,0])
+       
+        
+    
+    # Score de Distortion
+    
+    distortion = 0
+    for i in range(X.shape[0]):
+        distortion += min([metrics.pairwise.euclidean_distances(
+                            X.iloc[i].to_numpy().reshape(1, -1), c.reshape(1, -1))**2 for c in centers]).item()
+    
+    # Score Calinsky Harabasz
+    
+    cali = metrics.calinski_harabasz_score(X, clusters)
+        
+    # Score Silhouette    
+        
+    sil = metrics.silhouette_score(X, clusters)
+    
+    # Score de Gini
+    
+    gin = gini(clusters)
+        
+    # Affichage des resultats
+    
+    if display:
+        
+        print('Score avec {} clusters: '.format(k))
+        print('Score de Distortion : {:,}'.format(round(distortion)))
+        print('Score de Calinsky Harabasz : {:,}'.format(round(cali)))
+        print('Score de Silhouette : {}'.format(round(sil, 2)))
+        print('Score de Gini : {}'.format(round(gin, 3)))
+        
+    
+    return([distortion, cali, sil, gin])
+    
+# =======================================================================================================
 
-#         oof_preds[valid_idx] = clf.predict_proba(valid_x, num_iteration=clf.best_iteration_)[:, 1]
-#         sub_preds += clf.predict_proba(test_df[feats], num_iteration=clf.best_iteration_)[:, 1] / folds.n_splits
+# Gap Statistic for K means
+    
+def optimalK(data, nrefs=3, maxClusters=15):
+    """
+    Calculates KMeans optimal K using Gap Statistic 
+    Params:
+        data: ndarry of shape (n_samples, n_features)
+        nrefs: number of sample reference datasets to create
+        maxClusters: Maximum number of clusters to test for
+    Returns: (gaps, optimalK)
+    """
+    gaps = np.zeros((len(range(1, maxClusters)),))
+    resultsdf = pd.DataFrame({'clusterCount':[], 'gap':[]})
+    for gap_index, k in enumerate(range(1, maxClusters)):
+    # Holder for reference dispersion results
+        refDisps = np.zeros(nrefs)
+    # For n references, generate random sample and perform kmeans getting resulting dispersion of each loop
+        for i in range(nrefs):
 
-#         fold_importance_df = pd.DataFrame()
-#         fold_importance_df["feature"] = feats
-#         fold_importance_df["importance"] = clf.feature_importances_
-#         fold_importance_df["fold"] = n_fold + 1
-#         feature_importance_df = pd.concat([feature_importance_df, fold_importance_df], axis=0)
-#         print('Fold %2d AUC : %.6f' % (n_fold + 1, roc_auc_score(valid_y, oof_preds[valid_idx])))
-#         del clf, train_x, train_y, valid_x, valid_y
-#         gc.collect()
+            # Create new random reference set
+            randomReference = np.random.random_sample(size=data.shape)
 
-#     print('Full AUC score %.6f' % roc_auc_score(train_df['TARGET'], oof_preds))
-#     # Write submission file and plot feature importance
-#     if not debug:
-#         test_df['TARGET'] = sub_preds
-#         test_df[['SK_ID_CURR', 'TARGET']].to_csv(submission_file_name, index= False)
-#     display_importances(feature_importance_df)
-#     return feature_importance_df
+            # Fit to it
+            km = KMeans(k)
+            km.fit(randomReference)
+
+            refDisp = km.inertia_
+            refDisps[i] = refDisp
+        # Fit cluster to original data and create dispersion
+        km = KMeans(k)
+        km.fit(data)
+
+        origDisp = km.inertia_
+        # Calculate gap statistic
+        gap = np.log(np.mean(refDisps)) - np.log(origDisp)
+        # Assign this loop's gap statistic to gaps
+        gaps[gap_index] = gap
+
+        resultsdf = resultsdf.append({'clusterCount':k, 'gap':gap}, ignore_index=True)
+
+
+    return (gaps.argmax() + 1, resultsdf)
+
+# =======================================================================================================
+
+# Gini coefficient
+    
+def gini(clusters_labels):
+    """Compute the Gini coefficient for a clustering.
+    Parameters:
+    - clusters_labels: pd.Series of labels of clusters for each point.
+    """
+
+    # Get frequencies from clusters_labels
+    clusters_labels = pd.Series(clusters_labels)
+    frequencies = clusters_labels.value_counts()
+
+    # Mean absolute difference
+    mad = frequencies.mad()
+
+    # Mean frequency of clusters
+    mean = frequencies.mean()
+
+    # Gini coefficient
+    gini_coeff = 0.5 * mad / mean
+
+    return gini_coeff
+
+# =======================================================================================================
+
+def kmeans_function(data, scaler=None, K=None):
+    """Fonction pour clustering K-means :
+        - Scaling des données
+        - Visualisations de différentes staistiques (Distortion, Silhouette, Calinsky et Gap)
+        - Run K-means avec le nombre optimal de cluster défini par le score de Distortion
+        - Renvoie un dataset avec une nouvelle colonne contenant les labels des clusters
+        
+    -----------------------------------
+    data : pd.DataFrame : données que l'on veut "cluster"
+    scaler : sklearn.preprocessing : scaler à appliquer sur data avant kmeans   
+    """
+    
+    if scaler is not None:
+        X_scaled = scaler.fit_transform(data) # Scaling des données
+    else:
+        X_scaled = data.copy()
+        
+    
+    
+    model = KMeans() # On instancie kmean
+    
+    # Création de la figure pour visualiser les scores
+    
+    plt.figure(figsize=(24, 14))
+        
+    ax1 = plt.subplot(2,3,1) # Distortion Score Elbow
+    ax2 = plt.subplot(2,3,2) # Silhouette Score Elbow
+    ax3 = plt.subplot(2,3,3) # Calinsky Harabasz Score Elbow
+    ax4 = plt.subplot(2,2,3) # Silhouette plot
+    ax5 = plt.subplot(2,2,4) # Gap statistic
+    
+    visualizer_1 = KElbowVisualizer(model, k=(2,8), timings= True, ax=ax1) # k : nb de clusters
+    visualizer_1.fit(X_scaled)        # Fit sur nos données
+    visualizer_1.finalize()
+    
+    if K is None:
+        K = visualizer_1.elbow_value_    # On récupère la valeur opti de cluster selon le score de distortion
+    
+    visualizer_2 = KElbowVisualizer(model, k=(2,8), metric='silhouette', timings= True, ax=ax2) 
+    visualizer_2.fit(X_scaled) 
+    visualizer_2.finalize()
+        
+    visualizer_3 = KElbowVisualizer(model, k=(2,8), metric='calinski_harabasz', timings= True, ax=ax3) 
+    visualizer_3.fit(X_scaled)        
+    visualizer_3.finalize()
+    
+    opt_model = KMeans(K)  # On instancie kmean avec notre k optimal (selon le score de distortion)
+    visualizer_4 = SilhouetteVisualizer(opt_model, ax=ax4)
+    visualizer_4.fit(X_scaled)    
+    visualizer_4.finalize()    
+    
+    score_g, df_g = optimalK(X_scaled, nrefs=5, maxClusters=8)
+    ax5.plot(df_g['clusterCount'], df_g['gap'], linestyle='--', marker='o', color='b')
+    ax5.set_xlabel('K')
+    ax5.set_ylabel('Gap Statistic')
+    ax5.set_title('Gap Statistic vs. K')
+    
+    plt.show()
+    
+    # Implémentation d'une colonne cluster, contenant les labels des clusters, dans la dataframe initiale
+    
+    start = time.time()               # Fit le modèle avec k opti 
+    kmeans = opt_model.fit(X_scaled)  # et mesure le temps de calcul
+    end = time.time()
+    delta = round((end - start), 3)
+    
+    r_data = data.copy()
+    r_data['cluster'] = kmeans.labels_
+    
+    # Récupération des centres de chaque cluster
+    
+    if scaler is not None:
+        centers = scaler.inverse_transform(kmeans.cluster_centers_)
+    else:
+        centers = kmeans.cluster_centers_
+        
+    centers = pd.DataFrame(centers, columns=data.columns)
+    
+    counter = collections.Counter(kmeans.labels_) 
+    centers['nb_clients'] = list(dict(sorted(counter.items())).values())
+    
+    # Affichage du temps de calcul de l'algorithme et de l'indice de Gini
+    
+    gin = gini(r_data['cluster'])
+    
+    print('Temps d\'exécution avec k = {} : {}s'.format(K, delta))
+    print('Indice de Gini : {}'.format(gin))
+    
+    return(r_data, centers)
