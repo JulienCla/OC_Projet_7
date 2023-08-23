@@ -36,7 +36,7 @@ def get_data_client(id_client):
     data = load_data()
     data_client = data.loc[data['SK_ID_CURR'] == id_client, :]
     data_client = data_client.replace(np.nan, None)
-    return data_client
+    return data_client, data
 
 def request_prediction(model_uri, data):
     headers = {"Content-Type": "application/json"}
@@ -52,7 +52,7 @@ def request_prediction(model_uri, data):
 
     return response.json()
 
-def interactive_plot(data):
+def interactive_plot(data, data_client):
     x_axis = st.select_box('Selectionnez la variable à visualiser',
                           data.columns)
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -89,11 +89,11 @@ def main():
     st.subheader("Informations Client")
     # Récupération des données clients via SK_ID_CURR
     id_client = st.number_input('Id Client', value=0)
-    data = get_data_client(id_client)
+    data_client, data = get_data_client(id_client)
     
     # Filtre pour choisir quelles colonnes afficher 
     # de base les 10 variables les plus pertinentes sont séléctionnées
-    col = data.columns.to_list()
+    col = data_client.columns.to_list()
     default_col = col[0:10]
     selected_columns = st.multiselect('Choisissez les colonnes à afficher:',
                                       col,
@@ -101,7 +101,7 @@ def main():
     
     # Dataframe dynamique pour permettre à l'utilisateur de demander une
     # prédiction avec des changements sur ses infos
-    edited_data = st.data_editor(data[selected_columns])
+    edited_data = st.data_editor(data_client[selected_columns])
     
     st.markdown('#')
     st.subheader("Scoring")
@@ -112,7 +112,7 @@ def main():
     predict_btn = col1.button('Obtenir Prédiction')
     
     if predict_btn:
-        response = request_prediction(MODEL_URL_FLASK, data)
+        response = request_prediction(MODEL_URL_FLASK, data_client)
     
     # Affichage du résultat de la prédiction
     if response is not None:
@@ -124,6 +124,8 @@ def main():
         # Affichage explication de la prédiction (avec LIME)
         st.write("Détails du score obtenu :")
         components.html(response['explanation'], width=1200, height=300)
+        st.subheader("Analyse comparative - Visualisation")
+        interactive_plot(data, data_client)
       
                  
 if __name__ == '__main__':
