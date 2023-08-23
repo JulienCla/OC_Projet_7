@@ -55,6 +55,8 @@ def request_prediction(model_uri, data):
 def interactive_plot(data, data_client):
     x_axis = st.select_box('Selectionnez la variable à visualiser',
                           data.columns)
+    
+    
     fig, ax = plt.subplots(figsize=(8, 6))
 
     # data = train_df[['CODE_GENDER', 'TARGET']]
