@@ -6,29 +6,31 @@ import os
 import git
 from lime import lime_tabular
 import mlflow
+from custom_model import CustomModelWrapper
+sys.modules['CustomModelWrapper'] = CustomModelWrapper
 
 app = Flask(__name__)
 
 # Get the absolute path of the current directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Création d'une fonction personnalisée pour effectuer des prédictions en fonction d'un seuil
-class CustomModelWrapper(mlflow.pyfunc.PythonModel):
-    def __init__(self, model, threshold=0.5):
-        self.model = model
-        self.threshold = threshold
+# # Création d'une fonction personnalisée pour effectuer des prédictions en fonction d'un seuil
+# class CustomModelWrapper(mlflow.pyfunc.PythonModel):
+#     def __init__(self, model, threshold=0.5):
+#         self.model = model
+#         self.threshold = threshold
 
-    def predict(self, context, model_input):
-        # Prédiction personnalisée avec le paramètre threshold
-        probabilities = self.model.predict_proba(model_input)
-        predictions = (probabilities[:, 1] >= self.threshold).astype(int)
-        return predictions
+#     def predict(self, context, model_input):
+#         # Prédiction personnalisée avec le paramètre threshold
+#         probabilities = self.model.predict_proba(model_input)
+#         predictions = (probabilities[:, 1] >= self.threshold).astype(int)
+#         return predictions
     
-    def predict_proba(self, model_input, context=None):
-        return self.model.predict_proba(model_input)
+#     def predict_proba(self, model_input, context=None):
+#         return self.model.predict_proba(model_input)
     
-    def model(self, context=None):
-        return self.model
+#     def model(self, context=None):
+#         return self.model
 
 # Load pre-trained ML model using the absolute path
 MODEL_PATH = os.path.join(current_dir, 'model.joblib')
