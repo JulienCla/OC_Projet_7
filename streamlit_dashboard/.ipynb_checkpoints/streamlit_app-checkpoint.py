@@ -52,7 +52,7 @@ def request_prediction(model_uri, data):
 
     return response.json()
 
-def interactive_plot(df):
+def interactive_plot(data):
     x_axis = st.select_box('Selectionnez la variable à visualiser',
                           data.columns)
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -77,7 +77,7 @@ def interactive_plot(df):
                  weight='bold')
 
     y = ax.get_ylim()
-    x = X_test_df['CODE_GENDER']
+    x = data_client['CODE_GENDER']
     plt.plot([x, x], y,
              color="red", lw=2, linestyle="--", 
              label='Valeur Client')
