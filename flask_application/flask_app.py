@@ -6,7 +6,7 @@ import os
 import git
 from lime import lime_tabular
 import mlflow
-from custom_model import CustomModelWrapper
+from flask_application.custom_model import CustomModelWrapper
 
 
 app = Flask(__name__)
