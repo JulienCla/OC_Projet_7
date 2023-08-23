@@ -88,7 +88,7 @@ def predict():
                             index=data_json['dataframe_split']['index'])
 
         # Make predictions using the loaded model
-        predictions = model.predict(data)
+        predictions = model.predict(None, data)
 
         # Make explanation with lime        
         # for logistic regression

@@ -38,7 +38,7 @@ class Testflaskapp(unittest.TestCase):
         data_test.drop('Unnamed: 0', axis=1, inplace=True)
         
         model = joblib.load('model.joblib')
-        pred = model.predict(data_test)
+        pred = model.predict(None, data_test)
         self.assertIn(pred, [0, 1], 'Incorrect model output ! : {}'.format(pred))
         
     def test_request_predict(self):

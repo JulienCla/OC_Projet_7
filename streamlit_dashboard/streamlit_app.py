@@ -56,34 +56,45 @@ def interactive_plot(data, data_client):
     x_axis = st.select_box('Selectionnez la variable à visualiser',
                           data.columns)
     
-    
-    fig, ax = plt.subplots(figsize=(8, 6))
+    if data[x_axis].dtypes != 'float64':
+        fig, ax = plt.subplots(figsize=(8, 6))
 
-    # data = train_df[['CODE_GENDER', 'TARGET']]
-    sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='dodge', discrete=True, shrink=0.5)
-    ax.set_xticks([0, 1])
+        # data = train_df[['CODE_GENDER', 'TARGET']]
+        sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='dodge', discrete=True, shrink=0.5)
+        ax.set_xticks([0, 1])
 
-    a = [p.get_height() for p in ax.patches]
-    pourcentage = [a[0]/(a[0] + a[2]), a[1]/(a[1] + a[3]), a[2]/(a[0] + a[2]), a[3]/(a[1] + a[3])]
-    pourcentage = [np.round(100*i, 2) for i in pourcentage]
+        a = [p.get_height() for p in ax.patches]
+        pourcentage = [a[0]/(a[0] + a[2]), a[1]/(a[1] + a[3]), a[2]/(a[0] + a[2]), a[3]/(a[1] + a[3])]
+        pourcentage = [np.round(100*i, 2) for i in pourcentage]
 
-    for i, p in enumerate(ax.patches):
-        width = p.get_width()
-        height = p.get_height()
-        x, y = p.get_xy()
+        for i, p in enumerate(ax.patches):
+            width = p.get_width()
+            height = p.get_height()
+            x, y = p.get_xy()
 
-        plt.text(x+width/2,
-                 y+height*1.01,
-                 str(pourcentage[i])+'%',
-                 ha='center',
-                 weight='bold')
+            plt.text(x+width/2,
+                     y+height*1.01,
+                     str(pourcentage[i])+'%',
+                     ha='center',
+                     weight='bold')
 
-    y = ax.get_ylim()
-    x = data_client['CODE_GENDER']
-    plt.plot([x, x], y,
-             color="red", lw=2, linestyle="--", 
-             label='Valeur Client')
-    
+        y = ax.get_ylim()
+        x = data_client['CODE_GENDER']
+        plt.plot([x, x], y,
+                 color="red", lw=2, linestyle="--", 
+                 label='Valeur Client')
+
+    else:
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='stack', kde=True)
+
+        y = ax.get_ylim()
+        x = data_client['EXT_SOURCE_3']
+        plt.plot([x, x], y,
+                 color="red", lw=2, linestyle="--", 
+                 label='Valeur Client')
+        
     st.pyplot(fig)
     
                  
