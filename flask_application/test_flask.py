@@ -56,4 +56,5 @@ class Testflaskapp(unittest.TestCase):
             
     
 if __name__ == '__main__':
+    from flask_app import CustomModelWrapper
     unittest.main()
