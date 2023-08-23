@@ -19,6 +19,24 @@ model = joblib.load(MODEL_PATH)
 # Train lime explainer
 DATA_PATH = os.path.join(current_dir, 'lime_data.csv')
 
+# Création d'une fonction personnalisée pour effectuer des prédictions en fonction d'un seuil
+class CustomModelWrapper(mlflow.pyfunc.PythonModel):
+    def __init__(self, model, threshold=0.5):
+        self.model = model
+        self.threshold = threshold
+
+    def predict(self, context, model_input):
+        # Prédiction personnalisée avec le paramètre threshold
+        probabilities = self.model.predict_proba(model_input)
+        predictions = (probabilities[:, 1] >= self.threshold).astype(int)
+        return predictions
+    
+    def predict_proba(self, model_input, context=None):
+        return self.model.predict_proba(model_input)
+    
+    def model(self, context=None):
+        return self.model
+
 # Function to create and return the explainer instance
 def get_explainer():
     training_data = pd.read_csv(DATA_PATH)
@@ -71,19 +89,13 @@ def predict():
         # Make predictions using the loaded model
         predictions = model.predict(data)
 
-        # Make explanation with lime
-        
+        # Make explanation with lime        
         # for logistic regression
-        X_test_tr = model.named_steps['imputer_scaler'].transform(data)
-        predict_fn = model.named_steps['estimator'].predict_proba
+        X_test_tr = model.model.named_steps['imputer_scaler'].transform(data)
+        predict_fn = model.model.named_steps['estimator'].predict_proba
         
         explanation = explainer.explain_instance(X_test_tr[0], predict_fn,
                                                num_features=5)
-
-        # for lgbm
-        # predict_fn = model.predict_proba
-        # explanation = explainer.explain_instance(data, predict_fn,
-        #                                          num_features=5)
         
         explanation = explanation.as_html()
 
