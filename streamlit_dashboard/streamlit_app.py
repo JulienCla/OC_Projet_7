@@ -125,7 +125,7 @@ def main():
     predict_btn = col1.button('Obtenir Prédiction')
     
     if predict_btn:
-        response = request_prediction(MODEL_URL_FLASK, data_client)
+        response = request_prediction(MODEL_URL_FLASK, data_client.drop('cluster', axis=1))
     
     # Affichage du résultat de la prédiction
     if response is not None:
