@@ -93,4 +93,5 @@ def predict():
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
+    from custom_model import CustomModelWrapper
     app.run()
