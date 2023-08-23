@@ -5,6 +5,8 @@ import numpy as np
 import requests
 from PIL import Image
 import os
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(CURR_DIR, "data_streamlit.csv")
@@ -51,10 +53,39 @@ def request_prediction(model_uri, data):
     return response.json()
 
 def interactive_plot(df):
+    x_axis = st.select_box('Selectionnez la variable à visualiser',
+                          data.columns)
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # data = train_df[['CODE_GENDER', 'TARGET']]
+    sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='dodge', discrete=True, shrink=0.5)
+    ax.set_xticks([0, 1])
+
+    a = [p.get_height() for p in ax.patches]
+    pourcentage = [a[0]/(a[0] + a[2]), a[1]/(a[1] + a[3]), a[2]/(a[0] + a[2]), a[3]/(a[1] + a[3])]
+    pourcentage = [np.round(100*i, 2) for i in pourcentage]
+
+    for i, p in enumerate(ax.patches):
+        width = p.get_width()
+        height = p.get_height()
+        x, y = p.get_xy()
+
+        plt.text(x+width/2,
+                 y+height*1.01,
+                 str(pourcentage[i])+'%',
+                 ha='center',
+                 weight='bold')
+
+    y = ax.get_ylim()
+    x = X_test_df['CODE_GENDER']
+    plt.plot([x, x], y,
+             color="red", lw=2, linestyle="--", 
+             label='Valeur Client')
+    
+    st.pyplot(fig)
     
                  
 def main():
-    
     st.subheader("Informations Client")
     # Récupération des données clients via SK_ID_CURR
     id_client = st.number_input('Id Client', value=0)
