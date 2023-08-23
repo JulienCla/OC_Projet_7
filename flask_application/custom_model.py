@@ -1,3 +1,4 @@
+import mlflow
 # Création d'une fonction personnalisée pour effectuer des prédictions en fonction d'un seuil
 class CustomModelWrapper(mlflow.pyfunc.PythonModel):
     def __init__(self, model, threshold=0.5):
