@@ -1,13 +1,14 @@
 from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
+import sys
+from custom_model import CustomModelWrapper
+sys.modules['CustomModelWrapper'] = CustomModelWrapper
 import joblib
 import os
 import git
 from lime import lime_tabular
 import mlflow
-from custom_model import CustomModelWrapper
-sys.modules['CustomModelWrapper'] = CustomModelWrapper
 
 app = Flask(__name__)
 
