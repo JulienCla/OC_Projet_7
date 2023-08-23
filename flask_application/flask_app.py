@@ -84,7 +84,7 @@ def predict():
         explanation = explanation.as_html()
 
         response = {
-            'prediction': predictions, 
+            'prediction': int(predictions), 
             'explanation': explanation
         }
         return jsonify(response), 200
