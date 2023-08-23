@@ -50,6 +50,8 @@ def request_prediction(model_uri, data):
 
     return response.json()
 
+def interactive_plot(df):
+    
                  
 def main():
     
