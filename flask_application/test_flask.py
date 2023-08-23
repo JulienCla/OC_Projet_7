@@ -3,6 +3,7 @@ import pandas as pd
 import sys
 import joblib
 import mlflow
+from custom_model import CustomModelWrapper
 from unittest.mock import MagicMock
 sys.modules['git'] = MagicMock()
 from flask_app import app
