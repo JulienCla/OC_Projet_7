@@ -2,36 +2,17 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
 import sys
-from custom_model import CustomModelWrapper
-sys.modules['CustomModelWrapper'] = CustomModelWrapper
+# from custom_model import CustomModelWrapper
 import joblib
 import os
 import git
 from lime import lime_tabular
-import mlflow
+# import mlflow
 
 app = Flask(__name__)
 
 # Get the absolute path of the current directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# # Création d'une fonction personnalisée pour effectuer des prédictions en fonction d'un seuil
-# class CustomModelWrapper(mlflow.pyfunc.PythonModel):
-#     def __init__(self, model, threshold=0.5):
-#         self.model = model
-#         self.threshold = threshold
-
-#     def predict(self, context, model_input):
-#         # Prédiction personnalisée avec le paramètre threshold
-#         probabilities = self.model.predict_proba(model_input)
-#         predictions = (probabilities[:, 1] >= self.threshold).astype(int)
-#         return predictions
-    
-#     def predict_proba(self, model_input, context=None):
-#         return self.model.predict_proba(model_input)
-    
-#     def model(self, context=None):
-#         return self.model
 
 # Load pre-trained ML model using the absolute path
 MODEL_PATH = os.path.join(current_dir, 'model.joblib')
@@ -90,12 +71,12 @@ def predict():
                             index=data_json['dataframe_split']['index'])
 
         # Make predictions using the loaded model
-        predictions = model.predict(None, data)[0]
+        predictions = model.predict(data)[0]
 
         # Make explanation with lime        
         # for logistic regression
-        X_test_tr = model.model.named_steps['imputer_scaler'].transform(data)
-        predict_fn = model.model.named_steps['estimator'].predict_proba
+        X_test_tr = model.named_steps['imputer_scaler'].transform(data)
+        predict_fn = model.named_steps['estimator'].predict_proba
         
         explanation = explainer.explain_instance(X_test_tr[0], predict_fn,
                                                num_features=5)

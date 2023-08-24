@@ -2,8 +2,8 @@ import unittest
 import pandas as pd
 import sys
 import joblib
-import mlflow
-from custom_model import CustomModelWrapper
+# import mlflow
+# from custom_model import CustomModelWrapper
 from unittest.mock import MagicMock
 sys.modules['git'] = MagicMock()
 from flask_app import app
@@ -21,7 +21,7 @@ class Testflaskapp(unittest.TestCase):
         data_test.drop('Unnamed: 0', axis=1, inplace=True)
         
         model = joblib.load('model.joblib')
-        pred = model.predict(None, data_test)
+        pred = model.predict(data_test)
         self.assertIn(pred, [0, 1], 'Incorrect model output ! : {}'.format(pred))
         
     def test_request_predict(self):
