@@ -53,7 +53,7 @@ def request_prediction(model_uri, data):
     return response.json()
 
 def interactive_plot(data, data_client):
-    x_axis = st.select_box('Selectionnez la variable à visualiser',
+    x_axis = st.selectbox('Selectionnez la variable à visualiser',
                           data.columns)
     
     if data[x_axis].dtypes != 'float64':
