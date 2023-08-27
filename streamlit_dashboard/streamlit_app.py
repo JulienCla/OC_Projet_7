@@ -79,7 +79,7 @@ def interactive_plot(data, data_client):
                      weight='bold')
 
         y = ax.get_ylim()
-        x = data_client['CODE_GENDER']
+        x = data_client[x_axis]
         plt.plot([x, x], y,
                  color="red", lw=2, linestyle="--", 
                  label='Valeur Client')
@@ -90,7 +90,7 @@ def interactive_plot(data, data_client):
         sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='stack', kde=True)
 
         y = ax.get_ylim()
-        x = data_client['EXT_SOURCE_3']
+        x = data_client[x_axis]
         plt.plot([x, x], y,
                  color="red", lw=2, linestyle="--", 
                  label='Valeur Client')
@@ -137,9 +137,14 @@ def main():
         # Affichage explication de la prédiction (avec LIME)
         st.write("Détails du score obtenu :")
         components.html(response['explanation'], width=1200, height=300)
-        st.subheader("Analyse comparative - Visualisation")
+    
+    
+    st.subheader("Analyse comparative - Visualisation")
+    plot_btn = col1.button('Voir les données')
+    
+    if plot_btn:
         interactive_plot(data, data_client)
-      
+
                  
 if __name__ == '__main__':
     main()
