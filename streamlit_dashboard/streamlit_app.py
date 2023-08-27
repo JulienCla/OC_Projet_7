@@ -62,6 +62,7 @@ def interactive_plot(data, data_client):
         # data = train_df[['CODE_GENDER', 'TARGET']]
         sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='dodge', discrete=True, shrink=0.5)
         ax.set_xticks([0, 1])
+        ax.set_title('Distribution des clients selon {}'.format(x_axis), fontsize=18)
 
         a = [p.get_height() for p in ax.patches]
         pourcentage = [a[0]/(a[0] + a[2]), a[1]/(a[1] + a[3]), a[2]/(a[0] + a[2]), a[3]/(a[1] + a[3])]
@@ -88,6 +89,7 @@ def interactive_plot(data, data_client):
         fig, ax = plt.subplots(figsize=(8, 6))
 
         sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='stack', kde=True)
+        ax.set_title('Distribution des clients selon {}'.format(x_axis), fontsize=18)
 
         y = ax.get_ylim()
         x = data_client[x_axis]
