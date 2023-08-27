@@ -140,10 +140,7 @@ def main():
     
     
     st.subheader("Analyse comparative - Visualisation")
-    plot_btn = col1.button('Voir les données')
-    
-    if plot_btn:
-        interactive_plot(data, data_client)
+    interactive_plot(data, data_client)
 
                  
 if __name__ == '__main__':
