@@ -107,7 +107,7 @@ def main():
     # Filtre pour choisir quelles colonnes afficher 
     # de base les 10 variables les plus pertinentes sont séléctionnées
     col = data_client.columns.to_list()
-    default_col = col[0:10]
+    default_col = col [:1] + col[2:10]
     selected_columns = st.multiselect('Choisissez les colonnes à afficher:',
                                       col,
                                       default=default_col)

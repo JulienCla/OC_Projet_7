@@ -1,8 +1,9 @@
 artifact_uri: file:///C:/Users/julie/OpenClassrooms/Projet_7/mlruns/0/9318e8a2b9dd4cc6b15c3772ce871944/artifacts
+deleted_time: 1693120783024
 end_time: 1691063774209
 entry_point_name: ''
 experiment_id: '0'
-lifecycle_stage: active
+lifecycle_stage: deleted
 run_id: 9318e8a2b9dd4cc6b15c3772ce871944
 run_name: LogisticRegressionThresholded
 run_uuid: 9318e8a2b9dd4cc6b15c3772ce871944

@@ -284,7 +284,7 @@ def plot_roc_auc(y_test, y_pred_proba, display=True, save=True):
         plt.show()
     plt.close()
     
-    return best_thresh
+    return fpr[ix], best_thresh
 
 # Display/plot confusion matrix
 def plot_confusion_matrix(cm, target_names, title, 
@@ -340,15 +340,17 @@ def plot_learning_curve(X_train, y_train, estimator, display=True, save=True):
     
     fig, ax = plt.subplots(figsize=(10, 6))
 
+    cv = StratifiedKFold(n_splits=5)
     common_params = {
         "X": X_train,
         "y": y_train,
         "train_sizes": np.linspace(0.02, 1.0, 10),
-        "cv": 5,
+        "cv": cv,
+        "scoring": "roc_auc",
         "score_type": "both",
         "line_kw": {"marker": "o"},
         "std_display_style": "fill_between",
-        "score_name": "roc_auc",
+        "score_name": "ROC AUC",
     }
 
 
