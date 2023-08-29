@@ -55,7 +55,9 @@ def request_prediction(model_uri, data):
 def interactive_plot(data, data_client):
     x_axis = st.selectbox('Selectionnez la variable à visualiser',
                           data.columns)
-    
+    if plt.fignum_exists(1):
+        plt.close()
+        
     if data[x_axis].dtypes != 'float64':
         fig, ax = plt.subplots(figsize=(8, 6))
 
