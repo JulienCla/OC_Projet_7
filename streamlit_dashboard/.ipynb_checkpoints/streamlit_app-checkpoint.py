@@ -52,14 +52,13 @@ def request_prediction(model_uri, data):
 
     return response.json()
 
-def interactive_plot(data, data_client):
-    x_axis = st.selectbox('Selectionnez la variable à visualiser',
-                          data.columns)
+def interactive_plot(data, data_client, x_axis):
+    
     if plt.fignum_exists(1):
         plt.close()
         
     if data[x_axis].dtypes != 'float64':
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots()
 
         # data = train_df[['CODE_GENDER', 'TARGET']]
         sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='dodge', discrete=True, shrink=0.5)
@@ -88,7 +87,7 @@ def interactive_plot(data, data_client):
                  label='Valeur Client')
 
     else:
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots()
 
         sns.histplot(data=data, ax=ax, x=x_axis, hue='TARGET', multiple='stack', kde=True)
         ax.set_title('Distribution des clients selon {}'.format(x_axis), fontsize=18)
@@ -144,7 +143,9 @@ def main():
     
     
     st.subheader("Analyse comparative - Visualisation")
-    interactive_plot(data, data_client)
+    x_axis = st.selectbox('Selectionnez la variable à visualiser',
+                          data.columns)
+    interactive_plot(data, data_client, x_axis)
 
                  
 if __name__ == '__main__':
