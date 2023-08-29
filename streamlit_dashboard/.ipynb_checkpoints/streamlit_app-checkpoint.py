@@ -143,9 +143,11 @@ def main():
     
     
     st.subheader("Analyse comparative - Visualisation")
+    x_axis = None
     x_axis = st.selectbox('Selectionnez la variable à visualiser',
                           data.columns)
-    interactive_plot(data, data_client, x_axis)
+    if x_axis :
+        interactive_plot(data, data_client, x_axis)
 
                  
 if __name__ == '__main__':
